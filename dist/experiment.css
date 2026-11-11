@@ -1,0 +1,31 @@
+#experimentPanel[hidden]{display:none!important}
+#experimentPanel{position:fixed;z-index:30;right:14px;bottom:14px;width:min(820px,calc(100vw - 28px));max-height:72vh;overflow:auto;background:#fff;border:1px solid #b9cbd8;border-radius:12px;box-shadow:0 14px 55px #24485a33;color:#233f52;font:13px/1.5 system-ui,sans-serif}
+.exp-heading{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#eff7fa;border-bottom:1px solid #cddde5}
+.exp-heading strong{font-size:15px}.exp-heading small{margin-left:12px;color:#648094}
+.exp-content{padding:14px 16px}.exp-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0}
+#experimentPanel button,.exp-file{background:#f5f9fb;color:#284f64;border:1px solid #bfd2dd;border-radius:6px;padding:7px 12px;cursor:pointer;font:inherit}
+#experimentPanel button.primary{background:#087f83;color:white;border-color:#087f83}
+#experimentPanel button:disabled{opacity:.4;cursor:default}
+#experimentPanel input,#experimentPanel select{min-width:0;width:100%;box-sizing:border-box;border:1px solid #c4d5df;border-radius:5px;padding:6px;background:white;color:#213f52;font:inherit}
+#experimentPanel label{display:flex;flex-direction:column;gap:3px;font-size:11px;color:#567082}
+#experimentPanel fieldset{margin:0;padding:0;border:0;min-width:0}
+.exp-meta{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr;gap:8px}
+.exp-meta label:first-child{grid-column:span 2}
+.exp-note{font-size:11px;color:#6a7c88;margin:8px 0}
+.exp-steps{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.exp-step{border:1px solid #d5e2e9;border-radius:7px;padding:10px;background:#fcfdfe}
+.exp-step.current{border-left:3px solid #087f83}
+.exp-step-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.exp-step-head span{flex:1}.exp-step-head b{color:#087f83;font-variant-numeric:tabular-nums}
+#experimentPanel .exp-step-head button{padding:1px 9px}
+.exp-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.exp-fields>label:first-child{grid-column:1/-1}
+.exp-formula{grid-column:1/-1;color:#557684}
+.exp-footer{position:sticky;bottom:0;background:#f2f8fa;padding:10px 16px;border-top:1px solid #ccdde5}
+#expStatus{color:#17656c;font-size:12px;min-height:18px;overflow-wrap:anywhere}
+#expPlot{background:#fbfdfe;border:1px solid #e0e9ef;border-radius:6px;margin-top:8px}
+#expPlot svg{display:block;width:100%;max-height:190px;font:11px system-ui;fill:#607b8b}
+#expReadout,#expProgress{font-size:11px;color:#537083}
+.exp-file{display:inline-flex!important;font-size:12px!important}.exp-file input{width:170px!important}
+#expAction,#expMetric,#expSpeed{width:auto!important;max-width:180px}
+@media(max-width:650px){.exp-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.exp-meta{grid-template-columns:1fr 1fr}#experimentPanel{max-height:85vh}.exp-heading small{display:none}}

@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="本地运行的三维光学平台、空间光线追迹和偏振可视化工作台" />
+  <title>Optical Bench 3D · 三维光路工作台</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a111e'/%3E%3Cpath d='M8 42h18l10-20 8 20h12' fill='none' stroke='%234fd1c5' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='36' cy='22' r='5' fill='%23ffb454'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>.workspace{overflow:scroll!important;scrollbar-color:#415673 #0a111c;scrollbar-width:auto}#canvas{min-width:100%;min-height:100%;flex:none}.rotation-stem{stroke:#ffb454;stroke-width:1.5;stroke-dasharray:3 3;pointer-events:none}.rotation-handle{fill:#101a29;stroke:#ffb454;stroke-width:2;cursor:crosshair}.aperture-edge{stroke:#6d819b;stroke-width:1;stroke-dasharray:2 2;pointer-events:none}.warning-text{fill:#ffb454;font-size:10px;text-anchor:middle;pointer-events:none}.beam-envelope{opacity:.13;pointer-events:none}.beam-envelope.clipped{opacity:.25;stroke:#ffb454;stroke-width:.7;stroke-dasharray:3 2}.selection-box{fill:#4fd1c51c;stroke:#4fd1c5;stroke-width:1.3;stroke-dasharray:5 3;pointer-events:none}.multi-selected{fill:none;stroke:#ffb454;stroke-width:2;pointer-events:none}.focus-marker{fill:#07101b;stroke:#fff;stroke-width:1.6}.focus-marker.virtual{stroke:#ffb454;stroke-dasharray:2 2}.focus-label{fill:#dce8f7;font-size:9px;text-anchor:middle;pointer-events:none}.delay-diagram path{fill:none;stroke:#8ee9df;stroke-width:2;stroke-linecap:round;pointer-events:none}.scan-chart{display:block;width:100%;height:84px;margin-top:6px}.scan-chart path{stroke:#33445c;fill:none}.scan-chart polyline{stroke:#4fd1c5;stroke-width:2;fill:none}</style>
+  <link rel="stylesheet" href="three.css" />
+  <link rel="stylesheet" href="light.css" /><link rel="stylesheet" href="experiment.css" />
+  <link rel="stylesheet" href="lablog.css" /><link rel="stylesheet" href="data-workbench.css" /><link rel="stylesheet" href="record.css" />
+<link rel="stylesheet" href="catalog.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">⌁</span><div><strong>Optical Bench <em>3D</em></strong><small>V14.4 · 实验工作簿</small></div></div>
+    <div class="toolbar">
+      <button id="labLogBtn" class="tool-btn">实验记录</button><button id="dataWorkbenchBtn" class="tool-btn">数据表与绘图</button>
+      <button id="rayToggleBtn" class="tool-btn active">自动追迹：开 <kbd>B</kbd></button>
+      <button id="measureBtn" class="tool-btn">测量路径 <kbd>M</kbd></button>
+      <button id="rotateBtn" class="tool-btn">旋转器件 <kbd>R</kbd></button>
+      <button id="deleteBtn" class="tool-btn danger">删除 <kbd>Del</kbd></button>
+      <button id="alignBtn" class="tool-btn">双光阑对准 <kbd>A</kbd></button>
+      <button id="undoBtn" class="tool-btn" disabled>撤销 <kbd>Ctrl Z</kbd></button>
+      <button id="redoBtn" class="tool-btn" disabled>重做 <kbd>Ctrl Y</kbd></button>
+      <span class="divider"></span>
+      <button id="experimentBtn" class="tool-btn">实验流程</button>
+      <button id="saveBtn" class="tool-btn">保存</button>
+      <button id="exportBtn" class="tool-btn">导出 JSON</button>
+      <label class="tool-btn file-label">导入<input id="importInput" type="file" accept="application/json" /></label>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <aside class="sidebar left-panel">
+      <section>
+        <div class="section-title"><span>器件库</span><small>点击选择型号</small></div>
+        <div id="componentLibrary" class="component-library"></div>
+        <button id="componentPackBtn" class="wide-btn">＋ 添加器件模组</button>
+      </section>
+      <section>
+        <div class="section-title"><span>光学平台</span></div>
+        <div class="form-grid compact">
+          <label>横向孔数<input id="boardCols" type="number" min="4" max="80" value="24" /></label>
+          <label>纵向孔数<input id="boardRows" type="number" min="4" max="60" value="16" /></label>
+          <label>孔距 (mm)<input id="holeSpacing" type="number" min="10" max="50" value="25" /></label>
+        </div>
+        <button id="addBoardBtn" class="wide-btn">＋ 添加一块平台</button>
+      </section>
+      <section class="legend">
+        <div class="section-title"><span>光束颜色</span></div>
+        <div><i class="dot uv"></i>≤450 nm</div><div><i class="dot visible"></i>可见光</div><div><i class="dot ir"></i>≥700 nm</div>
+      </section>
+    </aside>
+
+    <section class="workspace-wrap">
+      <div id="statusBar" class="status-bar"><span class="status-dot"></span><span id="statusText">左键拖器件 · Alt 拖动旋转 · Ctrl 拖动平移</span><span id="zoomText">100%</span></div>
+      <div class="view-tools">
+        <div class="view-group"><button data-view="iso" title="快捷键 1">立体</button><button data-view="top" title="快捷键 2">俯视</button><button data-view="front" title="快捷键 3">正视</button><button data-view="side" title="快捷键 4">侧视</button><button id="fitBtn" title="快捷键 F">适应画面</button></div>
+        <div class="view-group"><button id="orbitBtn" title="启用后左键拖动旋转视角，再次点击或按 Esc 退出">旋转视角</button><button id="polBtn" class="active">偏振</button><button id="animateBtn" class="active">暂停偏振</button><button id="boardVisBtn" class="active" title="显示或隐藏平台，不改变光路">平台</button><button id="namesBtn" class="active">器件名</button><button id="waveBtn" class="active">波长</button><button id="labelsBtn" class="active" title="平台尺寸与焦点距离">辅助标签</button></div>
+        <div class="view-group"><button id="snapBtn" class="active">孔位吸附</button><button id="moveZBtn">移动 Z</button><button id="moveBoardBtn">移动平台</button></div>
+      </div>
+      <div id="workspace" class="workspace" tabindex="0" aria-label="光路编辑画布">
+        <canvas id="canvas3d" tabindex="0" aria-label="三维光学平台。旋转视角模式下左键拖动，或 Alt 拖动旋转；Ctrl 拖动平移；1 到 4 切换视角。"></canvas>
+        <div id="tooltip" class="beam-tooltip" role="tooltip"></div>
+      </div>
+      <div class="canvas-help">「旋转视角」＋左键 / Alt 拖动：旋转 · Ctrl 拖动：平移 · 滚轮：缩放 · Shift 拖动：框选</div>
+    </section>
+
+    <aside class="sidebar right-panel">
+      <section>
+        <div class="section-title"><span>属性</span><small id="selectionType">未选择</small></div>
+        <div id="emptyInspector" class="empty-state">点击立体器件编辑 XYZ 和朝向。点击光束查看偏振横截面。<button id="demoBtn" class="wide-btn">载入三维折叠光路示例</button></div>
+        <div id="inspector" class="inspector hidden"></div>
+      </section>
+      <section>
+        <div class="section-title"><span>路径计算</span></div>
+        <div id="pathResult" class="path-result">
+          <p>点击样品可比较所有命中光束；也可以点击“测量路径”后选择光源和终点。</p>
+        </div>
+      </section>
+      <section>
+        <div class="section-title"><span>光路诊断</span></div>
+        <div id="diagnosticResult" class="path-result"><p>空间命中、光阑偏心和探测器状态会显示在这里。</p></div>
+      </section>
+      <section>
+        <div class="section-title"><span>当前设计</span></div>
+        <div class="summary-grid"><div><strong id="componentCount">0</strong><small>器件</small></div><div><strong id="beamCount">0</strong><small>光束段</small></div><div><strong id="sourceCount">0</strong><small>光源</small></div></div>
+      </section>
+    </aside>
+  </main>
+
+
+  <section id="experimentPanel" hidden aria-label="实验流程编辑器">
+    <div class="exp-heading"><div><strong>实验流程</strong><small>快照 → 动作 → 测量</small></div><button id="expClose" title="运行后请先重置，再关闭面板">关闭</button></div>
+    <div class="exp-content">
+      <div class="exp-actions"><button id="expCapture">捕获当前为初始状态</button><button id="expExample">载入 HWP ×1 / POL ×2 示例</button></div>
+      <p id="expSnapshot" class="exp-note"></p>
+      <fieldset id="expEditor">
+        <div class="exp-meta">
+          <label>实验名称<input id="expTitle" type="text"></label>
+          <label>读取探测器<select id="expDetector"></select></label>
+          <label>波长下限 / nm<input id="expMin" type="number" value="200"></label>
+          <label>波长上限 / nm<input id="expMax" type="number" value="3500"></label>
+        </div>
+        <div class="exp-actions"><select id="expAction" aria-label="新步骤类型"><option value="scan">扫描 / 联动扫描</option><option value="set">设定参数</option><option value="wait">等待</option><option value="measure">测量</option></select><button id="expAdd">＋ 添加步骤</button></div>
+        <div id="expSteps" class="exp-steps"></div>
+      </fieldset>
+      <p class="exp-note">扫描与设定动作都会读取 PD。波长窗口仅筛选模拟读数，不会插入真实滤光片。等待仅控制流程时间，不模拟锁相放大器或探测器的稳定过程。运行中锁定搭建；重置后可编辑。</p>
+      <div class="exp-actions"><select id="expMetric" aria-label="曲线纵轴"><option value="powerMw">PD 功率 / mW</option><option value="voltageV">估算电压 / V</option><option value="currentMa">光电流 / mA</option></select><button id="expCsv">导出结果 CSV</button><button id="expExport">导出流程 JSON</button></div>
+      <div id="expPlot"></div><div id="expReadout"></div>
+    </div>
+    <div class="exp-footer"><div class="exp-actions"><button id="expPlay" class="primary">▶ 播放</button><button id="expPause">暂停</button><button id="expStep">单步 / 单点</button><button id="expReset">重置</button><select id="expSpeed" aria-label="播放速度"><option value="1">1×</option><option value="2">2×</option><option value="5">5×</option><option value="10">10×</option></select><span id="expProgress"></span></div><div id="expStatus" role="status" aria-live="polite">先捕获光路，再添加实验步骤。</div></div>
+  </section>
+
+  <section id="labLogPanel" hidden aria-label="实验数据与日志">
+    <header class="log-head"><strong>实验数据与日志</strong><div><button id="logFolder">全部实验 → 选择文件夹</button> <button id="logArchive">全部实验 ZIP</button> <button id="logNotion">全部实验 → 一篇 Notion 笔记</button> <button id="logExport">导出日志 HTML</button> <button id="logClose">关闭</button></div></header>
+    <p id="logStatus" role="status" aria-live="polite"></p><div class="log-content"><section>
+      <div id="logSheets" class="experiment-tabs" role="tablist" aria-label="实验记录 Sheets"></div><h3>实验记录</h3><div class="log-grid">
+      <label>标题<input id="log_title"></label><label>日期<input id="log_date" type="date"></label>
+      <label>记录人<input id="log_author"></label><label>数据性质<select id="logKind"><option>实测数据（用户声明）</option><option>模拟数据</option><option>合成演示数据</option><option>未声明</option></select></label>
+      <label class="log-wide">实验目的<textarea id="log_purpose" rows="3"></textarea></label>
+      <label class="log-wide">仪器与采集设置<textarea id="log_settings" rows="3" placeholder="例如：积分时间、增益、样品、环境条件"></textarea></label>
+      <label class="log-wide">观察与后续计划<textarea id="log_notes" rows="4"></textarea></label></div>
+      <p class="log-note">日志仅包含实验目的与设置、当前模拟光路、预设动作和导入数据与曲线。录制动作会标为“仅模拟器流程，非硬件执行记录”。导出后可在浏览器中打印成 PDF。</p>
+      <details><summary>照片重建来源与待确认参数</summary><pre id="logPhoto"></pre></details>
+    </section><section><h3>数据分析</h3><p>导入横向或纵向 TXT，编辑数据名称和单元格，再选择折线图、散点图或极坐标图，设置公式拟合。</p><button id="logWorkbenchBtn">打开数据表与绘图</button><p id="logDataSummary"></p><div id="logAnalysisPreview"></div><p class="log-note">不再限制 100 列。按总数据量限制为 10 MB / 200,000 单元格；表格分页显示。两三行横向数据可一键转置。</p></section>
+    <section id="logProgram"><h3>模拟器录制动作</h3><button id="recordActionBtn">● 返回光路，录制扫描动作</button><p class="log-note">选择器件 → 设置位移或旋转轴 → 起点、步长、终点 → 可选同步联动。程序框依次执行，可上移、下移或删除。模拟运行不代表真实实验已经执行。</p></section>
+    <section id="logLegacyData" hidden><h3>导入 TXT / CSV / TSV</h3>
+      <div class="log-actions"><input id="logFile" type="file" accept=".txt,.csv,.tsv"><button id="logExample">合成数据示例</button><button id="logClear">移除数据</button></div>
+      <p id="logFilename"></p><div class="log-grid">
+      <label>文件编码<select id="logEncoding"><option value="utf-8">UTF-8</option><option value="gb18030">GB18030</option></select></label>
+      <label>分隔符<select id="logDelimiter"><option value="auto">自动识别</option><option value="comma">逗号</option><option value="tab">Tab</option><option value="semicolon">分号</option><option value="space">空白</option></select></label>
+      <label>跳过开头行数<input id="logSkip" type="number" value="0" min="0" step="1"></label>
+      <label><span><input id="logHeader" type="checkbox" checked> 首行为表头</span><span><input id="logDecimal" type="checkbox"> 逗号作小数点</span></label>
+      <label>X 列<select id="logX"></select></label><label>Y 列<select id="logY"></select></label>
+      <label>X 乘数<input id="logXScale" type="number" value="1" step="any"></label><label>Y 乘数<input id="logYScale" type="number" value="1" step="any"></label>
+      <label>X 名称与单位<input id="logXLabel" value="X"></label><label>Y 名称与单位<input id="logYLabel" value="Y"></label></div>
+      <div class="log-actions"><button id="logSaveMap">保存列映射</button><label>读取列映射<input id="logLoadMap" type="file" accept=".json"></label></div>
+      <div id="logPreview"></div><div id="logChart"></div>
+      <p class="log-note">最多 10 MB、200,000 单元格。空值和非数值不会当成零；被排除的行会保留在日志中。原始数据随设计 JSON 保存。</p>
+    </section></div>
+  </section>
+  <script src="components.js"></script>
+  <script src="catalog-core.js"></script><script src="catalog-data.js"></script><script src="engine3d.js"></script>
+  <script src="view3d.js"></script>
+  <script src="sheets.js"></script><script src="app8.js"></script><script src="experiment.js"></script><script src="experiment-ui.js"></script>
+  <script src="data-workbench.js"></script><script src="lablog.js"></script><script src="notion-export.js"></script><script src="experiment-archive.js"></script><script src="lablog-ui.js"></script><script src="data-workbench-ui.js"></script><script src="record-ui.js"></script><script src="component-packs.js"></script><script src="catalog-ui.js"></script>
+</body>
+</html>

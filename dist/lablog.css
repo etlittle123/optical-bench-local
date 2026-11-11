@@ -1,0 +1,18 @@
+#labLogPanel[hidden]{display:none!important}
+#labLogPanel{position:fixed;inset:5vh max(3vw,12px);z-index:40;background:white;color:#243f51;border:1px solid #b8ceda;border-radius:12px;box-shadow:0 18px 80px #29465755;overflow:auto;font:13px/1.6 system-ui}
+.log-head{position:sticky;top:0;z-index:2;background:#eef6f9;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #cfdee7}
+.log-head strong{font-size:18px}.log-content{padding:18px 22px;display:grid;grid-template-columns:minmax(280px,1fr) minmax(340px,1.4fr);gap:24px}
+#labLogPanel label{display:flex;flex-direction:column;gap:4px;color:#516d80;font-size:12px}
+#labLogPanel input,#labLogPanel select,#labLogPanel textarea{box-sizing:border-box;width:100%;border:1px solid #bfd1dc;border-radius:5px;padding:7px;background:white;color:#203e51;font:inherit}
+#labLogPanel input[type=checkbox]{width:auto;align-self:start}
+#labLogPanel textarea{resize:vertical;min-height:70px}
+.log-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.log-wide{grid-column:1/-1}
+#labLogPanel button{border:1px solid #b8ced9;padding:7px 12px;border-radius:5px;color:#24536b;background:#f2f8fa;cursor:pointer;font:inherit}
+#labLogPanel button.primary{background:#087f83;color:white}#labLogPanel button:disabled{opacity:.45;cursor:default}
+.log-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.log-note{color:#6c7e8b;font-size:11px}
+#logPreview{overflow:auto;max-height:180px}#logPreview table{border-collapse:collapse;font-size:11px;width:100%}#logPreview th,#logPreview td{border:1px solid #d8e4eb;padding:4px 8px;white-space:nowrap}
+#logChart svg{width:100%;background:#f7fbfc;border-radius:7px;margin-top:10px}
+#logStatus{padding:10px;background:#edf7f5;border-radius:5px;color:#17605d}
+#logPhoto{white-space:pre-wrap;overflow-wrap:anywhere;background:#f7f9fb;padding:10px;max-height:200px;overflow:auto;font:11px/1.6 monospace}
+@media(max-width:850px){.log-content{grid-template-columns:1fr}#labLogPanel{inset:12px}}

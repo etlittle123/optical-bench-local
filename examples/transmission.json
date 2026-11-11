@@ -1,0 +1,76 @@
+{
+  "version": 8,
+  "showRays": true,
+  "boards": [
+    {
+      "id": "board",
+      "x": 0,
+      "y": 0,
+      "cols": 20,
+      "rows": 15,
+      "spacing": 25
+    }
+  ],
+  "components": [
+    {
+      "id": "LD1",
+      "name": "LD1",
+      "type": "laser",
+      "x": 100,
+      "y": 100,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "wavelength": 800,
+        "power": 1,
+        "repetitionRate": 1,
+        "polarization": 0,
+        "ellipticity": 0,
+        "waistRadius": 1,
+        "m2": 1,
+        "pulseWidth": 50,
+        "gdd": 0
+      }
+    },
+    {
+      "id": "MAT1",
+      "name": "MAT1",
+      "type": "material",
+      "x": 200,
+      "y": 100,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "aperture": 25.4,
+        "thickness": 2,
+        "refractiveIndex": 1.5,
+        "groupIndex": 1.6,
+        "transmission": 80,
+        "materialGdd": 0
+      }
+    },
+    {
+      "id": "PD1",
+      "name": "PD1",
+      "type": "detector",
+      "x": 300,
+      "y": 100,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "aperture": 9.8,
+        "responsivity": 0.5,
+        "transimpedanceGain": 1000,
+        "saturationPower": 10,
+        "minWavelength": 200,
+        "maxWavelength": 1100
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict'),D=require('../dist/data-workbench.js');
+const close=(a,b,t=1e-5)=>assert.ok(Math.abs(a-b)<t,`${a} != ${b}`);
+let g=D.parseGrid('angle\t0\t45\t90\nsignal\t1\t0.5\t0',{transpose:true});assert.deepEqual(g.headers,['angle','signal']);assert.equal(D.series(g,0,1).points.length,3);
+g=D.parseGrid(Array.from({length:4000},(_,i)=>i).join('\t')+'\n'+Array.from({length:4000},(_,i)=>i*2).join('\t'),{transpose:true,header:false});assert.equal(g.rows.length,4000);assert.equal(g.headers.length,2);
+assert.deepEqual(D.parseGrid(D.serializeGrid(['x','y'],[['1','2'],['3','4']])).rows,[['1','2'],['3','4']]);
+assert.equal(D.series({headers:['x','y'],rows:[['1',''],['2','3']]},0,1).rejected.length,1);
+assert.throws(()=>D.expression('globalThis.process.exit()',[]));assert.throws(()=>D.expression('constructor(1)',[]));close(D.expression('-x^2+2^3^2',[])(2,{}),508);
+let p=Array.from({length:50},(_,i)=>({x:i/10,y:3*i/10+2})),r=D.fit(p,'a*x+b',{a:1,b:0});assert.ok(r.converged);close(r.params.a,3);close(r.params.b,2);close(r.r2,1);
+p=Array.from({length:91},(_,i)=>({x:i*2,y:2*Math.cos((i*2-30)*Math.PI/180)**4+.1}));r=D.fit(p,'a*cosd(x-c)^4+b',{a:1.5,c:20,b:0});assert.ok(r.converged);close(r.params.c,30,1e-3);close(r.params.a,2,1e-4);
+p=Array.from({length:81},(_,i)=>({x:i/10-4,y:4*Math.exp(-.5*((i/10-4-.4)/.8)**2)+.2}));r=D.fit(p,'a*exp(-0.5*((x-mu)/sigma)^2)+b',{a:3,mu:0,sigma:1,b:0});assert.ok(r.converged);close(r.params.mu,.4,1e-4);close(r.params.sigma,.8,1e-4);
+assert.throws(()=>D.fit(p,'a*x+b+c',{a:1,b:1,c:1}),/冗余/);assert.throws(()=>D.fit(p,'a*x',{a:0,b:1}),/影响|辨识/);
+assert.ok(D.plot([{x:0,y:1}],{kind:'polar',xLabel:'<script>'}).includes('&lt;script&gt;'));assert.ok(D.plot([{x:0,y:-1}],{kind:'polar'}).includes('负值'));
+console.log('PASS wide-row transpose, editable TSV roundtrip, rejection, safe formulas, linear/Gaussian/polarization fits, identifiability, plots');

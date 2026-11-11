@@ -1,0 +1,10 @@
+const a=require('node:assert/strict');global.window={};require('../dist/components.js');const defs=window.OPTICAL_COMPONENTS,O=require('../dist/engine3d.js'),C=require('../dist/experiment.js');
+const near=(x,y)=>x.forEach((v,i)=>a.ok(Math.abs(v-y[i])<1e-8));
+let pose=C.rotatePose({yaw:0,pitch:0,roll:0},'rotation.worldZ',90);near(O.pose(pose).n,[0,1,0]);
+pose=C.rotatePose({yaw:0,pitch:0,roll:0},'rotation.worldX',90);near(O.pose(pose).n,[1,0,0]);near(O.pose(pose).u,[0,0,1]);
+pose=C.rotatePose({yaw:0,pitch:0,roll:0},'rotation.worldY',90);near(O.pose(pose).n,[0,0,-1]);
+const c={id:'m',name:'M',type:'mirror',x:100,y:100,z:100,yaw:0,pitch:0,roll:0,params:{...defs.mirror.defaults}},snapshot={version:8,boards:[{id:'b',x:0,y:0,rows:20,cols:20,spacing:25}],components:[c]};
+const plan={snapshot,detectorId:'',steps:[{type:'scan',target:'m',key:'rotation.worldZ',start:0,end:90,increment:45,dwellMs:0}],minNm:200,maxNm:3500};
+const r=new C.Runner(plan,s=>O.trace(s,defs));r.next();r.next();r.next();near(O.pose(r.state.components[0]).n,[0,1,0]);a.equal(r.rows.length,0);r.reset();r.next();near(O.pose(r.state.components[0]).n,[1,0,0]);
+a.throws(()=>C.compile({...plan,steps:[{...plan.steps[0],linked:true,secondTarget:'m',secondKey:'roll',offset:0,ratio:1}]}),/同一个器件/);
+console.log('PASS world/local rotations, singular Euler orientation, noncumulative scan, no-PD actions and reset');

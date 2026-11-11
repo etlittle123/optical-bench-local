@@ -1,0 +1,11 @@
+BBO V9 sources and conventions
+Sellmeier coefficients and d22/d31: EKSMA Optics, Laser Components Catalog 2017, BBO table.
+https://eksmaoptics.com/out/media/EKSMA_Optics_Laser_Components_Catalog_2017.pdf
+Units: wavelength nm externally / micrometres in Sellmeier; length mm; time ps; power mW.
+Near-normal, plane-parallel slab approximation: no interface refraction or Fresnel solver.
+o/e branches are modal powers, not a coherent recombination solver. Do not sum their Jones fields downstream.
+e output polarization uses transverse D transported into air; inside crystal E need not be perpendicular to k.
+Phase matching uses the wave-vector mismatch, sinc-squared plane-wave length response.
+Generated light uses the crystal midpoint approximation for delay and walkoff.
+Power is an undepleted, Gaussian spatial/temporal estimate. Values exceeding 5% are capped with a warning, not a saturated conversion solution.
+Only Type-I oo->e SHG and SFG. No Type-II, depletion, pulse-envelope evolution, coherent interference, anisotropic focusing or thermal effects.

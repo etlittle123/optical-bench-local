@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict'),C=require('../dist/experiment.js');
+global.window={};require('../dist/components.js');const defs=window.OPTICAL_COMPONENTS,O=require('../dist/engine3d.js');
+const c=(id,type,x,params={})=>({id,type,name:id,x,y:100,z:100,yaw:0,pitch:0,roll:0,params:{...defs[type].defaults,...params}});
+const snapshot={version:8,boards:[{id:'b',x:0,y:0,cols:25,rows:20,spacing:25}],components:[c('s','laser',50),c('h','hwp',100),c('p','polarizer',150,{transmission:100}),c('pd','detector',200,{saturationPower:200})]};
+const plan={version:1,snapshot,detectorId:'pd',minNm:700,maxNm:900,steps:[{type:'scan',target:'h',key:'roll',start:0,end:90,increment:15,linked:true,secondTarget:'p',secondKey:'roll',offset:0,ratio:2,dwellMs:100}]};
+const trace=s=>O.trace(s,defs),run=p=>{const r=new C.Runner(p,trace);while(!r.done)r.next();return r};
+const first=run(plan);assert.equal(first.rows.length,7);for(const r of first.rows)assert.ok(Math.abs(r.powerMw-98)<1e-6);assert.equal(first.rows.at(-1).secondValue,180);assert.equal(first.elapsedMs,700);
+assert.equal(snapshot.components[1].roll,0);assert.equal(first.state.components[1].roll,90);assert.equal(first.state.components[2].roll,180);
+first.reset();while(!first.done)first.next();assert.deepEqual(first.rows,run(plan).rows);
+const ext=JSON.parse(JSON.stringify(plan));ext.steps[0].offset=90;assert.ok(run(ext).rows.every(r=>r.powerMw<1e-8));
+ext.steps[0].start=90;ext.steps[0].end=0;ext.steps[0].increment=30;ext.steps[0].offset=180;assert.equal(run(ext).rows.length,4);
+ext.steps=[{type:'set',target:'s',key:'params.power',value:0,dwellMs:0},{type:'wait',dwellMs:500},{type:'measure',dwellMs:100}];const off=run(ext);assert.equal(off.rows.length,2);assert.equal(off.rows[1].elapsedMs,600);assert.equal(off.rows[1].rayCount,0);assert.equal(off.rows[1].arrivalMinPs,null);assert.equal(off.rows[1].powerMw,0);
+ext.steps=plan.steps;ext.minNm=390;ext.maxNm=410;assert.ok(run(ext).rows.every(r=>r.powerMw===0));
+const bad=JSON.parse(JSON.stringify(plan));bad.steps[0].increment=0;assert.throws(()=>C.compile(bad),/步长/);bad.steps[0].increment=.001;assert.throws(()=>C.compile(bad),/5000/);bad.steps[0].increment=1;bad.steps[0].target='missing';assert.throws(()=>C.compile(bad),/器件/);
+const delay={...snapshot,components:[...snapshot.components,c('dl','delay',300)]};C.assign(delay,'dl','params.travel',1);assert.ok(Math.abs(delay.components.at(-1).params.targetDelay-2/.299792458)<1e-10);
+assert.ok(C.csv([{sample:1,note:'a,"b"\nline',polarization:[{nm:800}]}]).includes('"a,""b""\nline"'));
+assert.ok(C.csv([{note:'=1+1'}]).includes("'=1+1"));
+console.log('PASS linked HWP/POL scan, offsets, descending scan, power off, waits, band selection, reset repeatability, bounds, missing references, delay units and CSV quoting');

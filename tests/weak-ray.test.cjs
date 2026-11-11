@@ -1,0 +1,8 @@
+const assert=require('node:assert/strict');global.window={};require('../dist/components.js');const O=require('../dist/engine3d.js');const {BenchView}=require('../dist/view3d.js');const defs=window.OPTICAL_COMPONENTS;
+const c=(id,type,x,params={})=>({id,name:id,type,x,y:100,z:100,yaw:0,pitch:0,roll:0,params:{...defs[type].defaults,...params}});
+const s={version:8,boards:[{id:'b',x:0,y:0,cols:20,rows:20,spacing:25}],components:[c('LD','laser',0,{power:.01}),c('FLT1','spectralFilter',50,{cutoffWavelength:775,blockTransmission:.01}),c('FLT2','spectralFilter',100,{cutoffWavelength:775,blockTransmission:.01}),c('PD','detector',200)]};
+let trace=O.trace(s,defs),r=trace.segments.find(r=>r.toId==='PD');assert.ok(r,'two OD4 filters must not erase nonzero weak path');assert.ok(Math.abs(r.beamEnd.power/1e-10-1)<1e-8);assert.equal(r.weak,true);assert.ok(r.timePs>0&&r.opl>200);assert.equal(O.formatSignal(r.beamEnd.power),'1.000e-10');
+const view=new BenchView({getContext:()=>({})},{animate:false});view.setScene(s,trace,new Set());assert.ok(view.items.some(i=>i.style.dash?.join(',')==='6,4'),'weak rays use dashed strokes');
+s.components[0].params.wavelength=400;r=O.trace(s,defs).segments.find(r=>r.toId==='PD');assert.ok(r.beamEnd.power>.008);assert.equal(r.weak,false);
+s.components[0].params.power=0;assert.equal(O.trace(s,defs).segments.length,0);s.components[0].params.power=.01;s.components[0].params.wavelength=800;s.components[2].params.blockTransmission=0;assert.ok(!O.trace(s,defs).segments.some(r=>r.toId==='PD'));
+assert.equal(O.formatSignal(0),'0.000');assert.equal(O.formatSignal(1e-12),'1.000e-12');console.log('PASS double OD4 weak propagation, zero blocking, pass band, dashed rendering, time and numeric display');

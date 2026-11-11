@@ -1,0 +1,283 @@
+{
+  "version": 8,
+  "boards": [
+    {
+      "id": "b",
+      "x": 0,
+      "y": 0,
+      "cols": 16,
+      "rows": 12,
+      "spacing": 25
+    }
+  ],
+  "components": [
+    {
+      "id": "LD400",
+      "name": "LD400",
+      "type": "laser",
+      "x": 0,
+      "y": 100,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "wavelength": 400,
+        "power": 1,
+        "repetitionRate": 1,
+        "polarization": 0,
+        "ellipticity": 0,
+        "waistRadius": 1,
+        "m2": 1,
+        "pulseWidth": 50,
+        "gdd": 0
+      }
+    },
+    {
+      "id": "catalog-item",
+      "type": "spectralFilter",
+      "name": "LBTEK MBF10-400-50",
+      "x": 100,
+      "y": 100,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "aperture": 22,
+        "filterType": "bandpass",
+        "cutoffWavelength": 650,
+        "centerWavelength": 400,
+        "bandwidth": 50,
+        "passTransmission": 90,
+        "blockTransmission": 0.01,
+        "thickness": 2,
+        "refractiveIndex": 1.5,
+        "materialGdd": 0
+      },
+      "catalog": {
+        "vendor": "LBTEK",
+        "sku": "MBF10-400-50",
+        "name": "400 nm 带通滤光片",
+        "baseType": "spectralFilter",
+        "params": {
+          "filterType": "bandpass",
+          "centerWavelength": 400,
+          "bandwidth": 50,
+          "aperture": 22,
+          "passTransmission": 90,
+          "blockTransmission": 0.01
+        },
+        "basis": {
+          "filterType": "厂商带通滤光片；使用理想矩形通带近似",
+          "centerWavelength": "厂商中心波长 400±5 nm，使用标称 400 nm",
+          "bandwidth": "用厂商 FWHM 50±5 nm 的标称值作为理想矩形全宽；不是实际半高点曲线",
+          "aperture": "厂商系列有效口径 Ø22.0 mm",
+          "passTransmission": "厂商 >90%；模型以 90% 作通带近似，不是全通带保证",
+          "blockTransmission": "厂商阻带 OD≥4，取 100×10⁻⁴=0.01% 近似；不代表实测漏光"
+        },
+        "specs": [
+          [
+            "中心波长",
+            "400±5 nm"
+          ],
+          [
+            "FWHM",
+            "50±5 nm"
+          ],
+          [
+            "透过率",
+            ">90%"
+          ],
+          [
+            "阻带范围 / OD",
+            "200–1100 nm（通带除外）/ ≥4"
+          ],
+          [
+            "直径 / 有效口径",
+            "25.4 mm / 22.0 mm"
+          ],
+          [
+            "基片",
+            "Schott Borofloat & Soda Lime"
+          ]
+        ],
+        "source": "https://en.lbtek.com/product/72?fid=28&sid=32&tid=62",
+        "checked": "2026-11-11",
+        "notes": "官方型号为 MBF10-400-50；MBF0-400-50 未查到。375–425 nm 理想矩形通带近似；真实边缘为连续过渡，FWHM 不等于平顶宽度。未导入镀膜曲线，未模拟斜入射蓝移；厚度、n、GDD 使用未核实默认值，不能据此精确计算该器件延时。",
+        "ranges": [
+          [
+            200,
+            1100
+          ]
+        ],
+        "maxAOI": 0,
+        "initialParams": {
+          "aperture": 22,
+          "filterType": "bandpass",
+          "cutoffWavelength": 650,
+          "centerWavelength": 400,
+          "bandwidth": 50,
+          "passTransmission": 90,
+          "blockTransmission": 0.01,
+          "thickness": 2,
+          "refractiveIndex": 1.5,
+          "materialGdd": 0
+        }
+      }
+    },
+    {
+      "id": "PD400",
+      "name": "PD400",
+      "type": "detector",
+      "x": 200,
+      "y": 100,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "aperture": 9.8,
+        "responsivity": 0.5,
+        "transimpedanceGain": 1000,
+        "saturationPower": 10,
+        "minWavelength": 200,
+        "maxWavelength": 1100
+      }
+    },
+    {
+      "id": "LD800",
+      "name": "LD800",
+      "type": "laser",
+      "x": 0,
+      "y": 200,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "wavelength": 800,
+        "power": 1,
+        "repetitionRate": 1,
+        "polarization": 0,
+        "ellipticity": 0,
+        "waistRadius": 1,
+        "m2": 1,
+        "pulseWidth": 50,
+        "gdd": 0
+      }
+    },
+    {
+      "id": "catalog-item-1",
+      "type": "spectralFilter",
+      "name": "LBTEK MBF10-400-50",
+      "x": 100,
+      "y": 200,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "aperture": 22,
+        "filterType": "bandpass",
+        "cutoffWavelength": 650,
+        "centerWavelength": 400,
+        "bandwidth": 50,
+        "passTransmission": 90,
+        "blockTransmission": 0.01,
+        "thickness": 2,
+        "refractiveIndex": 1.5,
+        "materialGdd": 0
+      },
+      "catalog": {
+        "vendor": "LBTEK",
+        "sku": "MBF10-400-50",
+        "name": "400 nm 带通滤光片",
+        "baseType": "spectralFilter",
+        "params": {
+          "filterType": "bandpass",
+          "centerWavelength": 400,
+          "bandwidth": 50,
+          "aperture": 22,
+          "passTransmission": 90,
+          "blockTransmission": 0.01
+        },
+        "basis": {
+          "filterType": "厂商带通滤光片；使用理想矩形通带近似",
+          "centerWavelength": "厂商中心波长 400±5 nm，使用标称 400 nm",
+          "bandwidth": "用厂商 FWHM 50±5 nm 的标称值作为理想矩形全宽；不是实际半高点曲线",
+          "aperture": "厂商系列有效口径 Ø22.0 mm",
+          "passTransmission": "厂商 >90%；模型以 90% 作通带近似，不是全通带保证",
+          "blockTransmission": "厂商阻带 OD≥4，取 100×10⁻⁴=0.01% 近似；不代表实测漏光"
+        },
+        "specs": [
+          [
+            "中心波长",
+            "400±5 nm"
+          ],
+          [
+            "FWHM",
+            "50±5 nm"
+          ],
+          [
+            "透过率",
+            ">90%"
+          ],
+          [
+            "阻带范围 / OD",
+            "200–1100 nm（通带除外）/ ≥4"
+          ],
+          [
+            "直径 / 有效口径",
+            "25.4 mm / 22.0 mm"
+          ],
+          [
+            "基片",
+            "Schott Borofloat & Soda Lime"
+          ]
+        ],
+        "source": "https://en.lbtek.com/product/72?fid=28&sid=32&tid=62",
+        "checked": "2026-11-11",
+        "notes": "官方型号为 MBF10-400-50；MBF0-400-50 未查到。375–425 nm 理想矩形通带近似；真实边缘为连续过渡，FWHM 不等于平顶宽度。未导入镀膜曲线，未模拟斜入射蓝移；厚度、n、GDD 使用未核实默认值，不能据此精确计算该器件延时。",
+        "ranges": [
+          [
+            200,
+            1100
+          ]
+        ],
+        "maxAOI": 0,
+        "initialParams": {
+          "aperture": 22,
+          "filterType": "bandpass",
+          "cutoffWavelength": 650,
+          "centerWavelength": 400,
+          "bandwidth": 50,
+          "passTransmission": 90,
+          "blockTransmission": 0.01,
+          "thickness": 2,
+          "refractiveIndex": 1.5,
+          "materialGdd": 0
+        }
+      }
+    },
+    {
+      "id": "PD800",
+      "name": "PD800",
+      "type": "detector",
+      "x": 200,
+      "y": 200,
+      "z": 100,
+      "yaw": 0,
+      "pitch": 0,
+      "roll": 0,
+      "params": {
+        "aperture": 9.8,
+        "responsivity": 0.5,
+        "transimpedanceGain": 1000,
+        "saturationPower": 10,
+        "minWavelength": 200,
+        "maxWavelength": 1100
+      }
+    }
+  ]
+}

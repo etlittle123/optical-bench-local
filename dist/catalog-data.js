@@ -1,0 +1,405 @@
+window.OPTICAL_CATALOG = {
+  "kind": "optical-bench-catalog",
+  "version": 1,
+  "records": [
+    {
+      "vendor": "Thorlabs",
+      "sku": "LA1509",
+      "name": "N-BK7 未镀膜平凸透镜",
+      "baseType": "lens",
+      "params": {
+        "focalLength": 100,
+        "thickness": 3.6
+      },
+      "basis": {
+        "focalLength": "V19 厂商目录标称焦距；固定焦距近似，未随波长修正",
+        "thickness": "V19 厂商目录中心厚度"
+      },
+      "specs": [
+        [
+          "直径",
+          "25.4 mm"
+        ],
+        [
+          "标称焦距",
+          "100 mm"
+        ],
+        [
+          "中心厚度",
+          "3.6 mm"
+        ],
+        [
+          "材料 / 镀膜",
+          "N-BK7 / 未镀膜"
+        ]
+      ],
+      "source": "https://www.thorlabs.com/images/Catalog/V19_08_Optics.pdf",
+      "checked": "2026-11-10",
+      "notes": "来源为厂商历史 V19 目录，非实时产品页。只映射焦距和厚度；有效口径、透过率、折射率与 GDD 未收录，使用通用默认值。薄透镜近似，无色散与像差。",
+      "ranges": []
+    },
+    {
+      "vendor": "Thorlabs",
+      "sku": "LA1986",
+      "name": "N-BK7 未镀膜平凸透镜",
+      "baseType": "lens",
+      "params": {
+        "focalLength": 125,
+        "thickness": 3.3
+      },
+      "basis": {
+        "focalLength": "V19 厂商目录标称焦距；固定焦距近似，未随波长修正",
+        "thickness": "V19 厂商目录中心厚度"
+      },
+      "specs": [
+        [
+          "直径",
+          "25.4 mm"
+        ],
+        [
+          "标称焦距",
+          "125 mm"
+        ],
+        [
+          "中心厚度",
+          "3.3 mm"
+        ],
+        [
+          "材料 / 镀膜",
+          "N-BK7 / 未镀膜"
+        ]
+      ],
+      "source": "https://www.thorlabs.com/images/Catalog/V19_08_Optics.pdf",
+      "checked": "2026-11-10",
+      "notes": "来源为厂商历史 V19 目录，非实时产品页。只映射焦距和厚度；有效口径、透过率、折射率与 GDD 未收录，使用通用默认值。薄透镜近似，无色散与像差。",
+      "ranges": []
+    },
+    {
+      "vendor": "Thorlabs",
+      "sku": "LA1433",
+      "name": "N-BK7 未镀膜平凸透镜",
+      "baseType": "lens",
+      "params": {
+        "focalLength": 150,
+        "thickness": 3.1
+      },
+      "basis": {
+        "focalLength": "V19 厂商目录标称焦距；固定焦距近似，未随波长修正",
+        "thickness": "V19 厂商目录中心厚度"
+      },
+      "specs": [
+        [
+          "直径",
+          "25.4 mm"
+        ],
+        [
+          "标称焦距",
+          "150 mm"
+        ],
+        [
+          "中心厚度",
+          "3.1 mm"
+        ],
+        [
+          "材料 / 镀膜",
+          "N-BK7 / 未镀膜"
+        ]
+      ],
+      "source": "https://www.thorlabs.com/images/Catalog/V19_08_Optics.pdf",
+      "checked": "2026-11-10",
+      "notes": "来源为厂商历史 V19 目录，非实时产品页。只映射焦距和厚度；有效口径、透过率、折射率与 GDD 未收录，使用通用默认值。薄透镜近似，无色散与像差。",
+      "ranges": []
+    },
+    {
+      "vendor": "LBTEK",
+      "sku": "CX10610-C",
+      "name": "N-BK7 平凸透镜 · C 镀膜",
+      "baseType": "lens",
+      "params": {
+        "focalLength": 50
+      },
+      "basis": {
+        "focalLength": "厂商产品表标称焦距（设计波长 587.6 nm）；未修正色散"
+      },
+      "specs": [
+        [
+          "直径",
+          "25.4 mm"
+        ],
+        [
+          "焦距",
+          "50 mm"
+        ],
+        [
+          "增透膜波段",
+          "1100–1650 nm"
+        ],
+        [
+          "材料",
+          "N-BK7 或同等材料"
+        ]
+      ],
+      "source": "https://www.lbtek.com/product/16?path=28/35/45/515",
+      "checked": "2026-11-10",
+      "notes": "只映射焦距。厚度、有效口径、n、透过率与 GDD 未收录，保留并标明模型默认值。镀膜波段不代表全波段固定透过率。",
+      "ranges": [
+        [
+          1100,
+          1650
+        ]
+      ]
+    },
+    {
+      "vendor": "LBTEK",
+      "sku": "CX10613-C",
+      "name": "N-BK7 平凸透镜 · C 镀膜",
+      "baseType": "lens",
+      "params": {
+        "focalLength": 100
+      },
+      "basis": {
+        "focalLength": "厂商产品表标称焦距（设计波长 587.6 nm）；未修正色散"
+      },
+      "specs": [
+        [
+          "直径",
+          "25.4 mm"
+        ],
+        [
+          "焦距",
+          "100 mm"
+        ],
+        [
+          "增透膜波段",
+          "1100–1650 nm"
+        ],
+        [
+          "材料",
+          "N-BK7 或同等材料"
+        ]
+      ],
+      "source": "https://www.lbtek.com/product/16?path=28/35/45/515",
+      "checked": "2026-11-10",
+      "notes": "只映射焦距。厚度、有效口径、n、透过率与 GDD 未收录，保留并标明模型默认值。镀膜波段不代表全波段固定透过率。",
+      "ranges": [
+        [
+          1100,
+          1650
+        ]
+      ]
+    },
+    {
+      "vendor": "LBTEK",
+      "sku": "CX10617-C",
+      "name": "N-BK7 平凸透镜 · C 镀膜",
+      "baseType": "lens",
+      "params": {
+        "focalLength": 200
+      },
+      "basis": {
+        "focalLength": "厂商产品表标称焦距（设计波长 587.6 nm）；未修正色散"
+      },
+      "specs": [
+        [
+          "直径",
+          "25.4 mm"
+        ],
+        [
+          "焦距",
+          "200 mm"
+        ],
+        [
+          "增透膜波段",
+          "1100–1650 nm"
+        ],
+        [
+          "材料",
+          "N-BK7 或同等材料"
+        ]
+      ],
+      "source": "https://www.lbtek.com/product/16?path=28/35/45/515",
+      "checked": "2026-11-10",
+      "notes": "只映射焦距。厚度、有效口径、n、透过率与 GDD 未收录，保留并标明模型默认值。镀膜波段不代表全波段固定透过率。",
+      "ranges": [
+        [
+          1100,
+          1650
+        ]
+      ]
+    },
+    {
+      "vendor": "Edmund Optics",
+      "sku": "86-104",
+      "name": "OD4 短通滤光片",
+      "baseType": "spectralFilter",
+      "params": {
+        "filterType": "shortpass",
+        "cutoffWavelength": 775,
+        "thickness": 3,
+        "aperture": 20,
+        "passTransmission": 91,
+        "blockTransmission": 0.01
+      },
+      "basis": {
+        "filterType": "厂商规格：短通",
+        "cutoffWavelength": "厂商标称截止波长；当前用理想阶跃代替真实过渡曲线",
+        "thickness": "厂商规格 3.00 ±0.1 mm",
+        "aperture": "保守近似：直径 25 mm × 厂商有效口径下限 80%",
+        "passTransmission": "近似：取厂商通带下限 ≥91%，不是实测曲线",
+        "blockTransmission": "近似：由厂商平均 OD≥4 换算 100×10⁻⁴=0.01%；不保证每个波长都等于此值"
+      },
+      "specs": [
+        [
+          "直径 / 厚度",
+          "25 mm / 3 mm"
+        ],
+        [
+          "截止波长",
+          "775 nm"
+        ],
+        [
+          "通带 / 透过率",
+          "400–760 nm / ≥91%"
+        ],
+        [
+          "阻带 / 平均 OD",
+          "795–1155 nm / ≥4"
+        ],
+        [
+          "入射角 / 基片",
+          "0° / 熔融石英"
+        ]
+      ],
+      "source": "https://www.edmundoptics.com/p/775nm-25mm-diameter-od-4-shortpass-filter/28591/",
+      "checked": "2026-11-10",
+      "notes": "规格边界近似，未导入镀膜曲线。过渡区和范围外没有定量保证；n 与 GDD 使用未核实的默认值。",
+      "ranges": [
+        [
+          400,
+          760
+        ],
+        [
+          795,
+          1155
+        ]
+      ],
+      "maxAOI": 0
+    },
+    {
+      "vendor": "Edmund Optics",
+      "sku": "64-333",
+      "name": "OD4 短通滤光片",
+      "baseType": "spectralFilter",
+      "params": {
+        "filterType": "shortpass",
+        "cutoffWavelength": 800,
+        "thickness": 3,
+        "aperture": 20,
+        "passTransmission": 91,
+        "blockTransmission": 0.01
+      },
+      "basis": {
+        "filterType": "厂商规格：短通",
+        "cutoffWavelength": "厂商标称截止波长；当前用理想阶跃代替真实过渡曲线",
+        "thickness": "厂商规格 3.00 ±0.1 mm",
+        "aperture": "保守近似：直径 25 mm × 厂商有效口径下限 80%",
+        "passTransmission": "近似：取厂商通带下限 ≥91%，不是实测曲线",
+        "blockTransmission": "近似：由厂商平均 OD≥4 换算 100×10⁻⁴=0.01%；不保证每个波长都等于此值"
+      },
+      "specs": [
+        [
+          "直径 / 厚度",
+          "25 mm / 3 mm"
+        ],
+        [
+          "截止波长",
+          "800 nm"
+        ],
+        [
+          "通带 / 透过率",
+          "400–790 nm / ≥91%"
+        ],
+        [
+          "阻带 / 平均 OD",
+          "825–1190 nm / ≥4"
+        ],
+        [
+          "入射角 / 基片",
+          "0° / 熔融石英"
+        ]
+      ],
+      "source": "https://www.edmundoptics.com/p/800nm-25mm-diameter-od-4-shortpass-filter/19045/",
+      "checked": "2026-11-10",
+      "notes": "规格边界近似，未导入镀膜曲线。过渡区和范围外没有定量保证；n 与 GDD 使用未核实的默认值。",
+      "ranges": [
+        [
+          400,
+          790
+        ],
+        [
+          825,
+          1190
+        ]
+      ],
+      "maxAOI": 0
+    },
+    {
+      "vendor": "LBTEK",
+      "sku": "MBF10-400-50",
+      "name": "400 nm 带通滤光片",
+      "baseType": "spectralFilter",
+      "params": {
+        "filterType": "bandpass",
+        "centerWavelength": 400,
+        "bandwidth": 50,
+        "aperture": 22,
+        "passTransmission": 90,
+        "blockTransmission": 0.01
+      },
+      "basis": {
+        "filterType": "厂商带通滤光片；使用理想矩形通带近似",
+        "centerWavelength": "厂商中心波长 400±5 nm，使用标称 400 nm",
+        "bandwidth": "用厂商 FWHM 50±5 nm 的标称值作为理想矩形全宽；不是实际半高点曲线",
+        "aperture": "厂商系列有效口径 Ø22.0 mm",
+        "passTransmission": "厂商 >90%；模型以 90% 作通带近似，不是全通带保证",
+        "blockTransmission": "厂商阻带 OD≥4，取 100×10⁻⁴=0.01% 近似；不代表实测漏光"
+      },
+      "specs": [
+        [
+          "中心波长",
+          "400±5 nm"
+        ],
+        [
+          "FWHM",
+          "50±5 nm"
+        ],
+        [
+          "透过率",
+          ">90%"
+        ],
+        [
+          "阻带范围 / OD",
+          "200–1100 nm（通带除外）/ ≥4"
+        ],
+        [
+          "直径 / 有效口径",
+          "25.4 mm / 22.0 mm"
+        ],
+        [
+          "基片",
+          "Schott Borofloat & Soda Lime"
+        ]
+      ],
+      "source": "https://en.lbtek.com/product/72?fid=28&sid=32&tid=62",
+      "checked": "2026-11-11",
+      "notes": "官方型号为 MBF10-400-50；MBF0-400-50 未查到。375–425 nm 理想矩形通带近似；真实边缘为连续过渡，FWHM 不等于平顶宽度。未导入镀膜曲线，未模拟斜入射蓝移；厚度、n、GDD 使用未核实默认值，不能据此精确计算该器件延时。",
+      "ranges": [
+        [
+          200,
+          1100
+        ]
+      ],
+      "maxAOI": 0
+    }
+  ]
+};

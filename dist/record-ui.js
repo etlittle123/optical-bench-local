@@ -1,0 +1,28 @@
+(()=>{'use strict';
+const $=id=>document.getElementById(id),esc=LabLogCore.esc,app=OpticalBench,C=ExperimentCore;
+let main=null,second=null,picking='main';
+const pane=document.createElement('section');pane.id='motionRecorder';pane.hidden=true;
+pane.innerHTML=`<header><strong>● 录制扫描动作</strong><button id="recCancel">返回实验记录</button></header><p id="recHint">点击光路中的主器件。这里只记录步骤，不移动真实仪器。</p><div class="rec-fields"><label>主器件<select id="recTarget"></select></label><label>运动类型<select id="recMotion"><option value="rotate">旋转 / °</option><option value="move">位移 / mm</option></select></label><label>轴<select id="recAxis"></select></label><label>初始值<input id="recStart" type="number" step="any" value="0"></label><label>步长（正数）<input id="recInc" type="number" step="any" value="1"></label><label>结束值<input id="recEnd" type="number" step="any" value="90"></label><label>每点等待 / ms<input id="recDwell" type="number" value="100" min="0"></label><label>步骤名<input id="recNote" value="扫描动作"></label></div><label><input type="checkbox" id="recLinked"> 同步联动另一器件</label><div id="recSecond" hidden><button id="recPickSecond">在光路中选择联动器件</button><div class="rec-fields"><label>联动器件<select id="recSecondTarget"></select></label><label>联动轴<select id="recSecondAxis"></select></label><label>联动初始值<input id="recOffset" type="number" value="0" step="any"></label><label>联动比例<input id="recRatio" type="number" value="2" step="any"></label></div><p>联动值 = 联动初始值 + 比例 ×（主轴值 − 主轴初始值）。这是同步扫描，不是嵌套扫描。</p></div><p>平台 X/Y/Z 旋转以本步骤开始时的姿态为 0°，绕器件中心转动；Roll 是器件自身光轴的绝对角。位移是绝对坐标。</p><button id="recAdd">＋ 记录到程序框</button><p id="recStatus" role="status"></p>`;
+document.body.appendChild(pane);
+const rotations=[['roll','自身光轴 Roll（绝对角）'],['rotation.localNormal','初始自身光轴（相对角）'],['rotation.worldX','平台 X 轴（相对角）'],['rotation.worldY','平台 Y 轴（相对角）'],['rotation.worldZ','平台 Z 轴（相对角）']];
+const moves=[['x','平台 X 坐标'],['y','平台 Y 坐标'],['z','平台 Z 高度'],['params.travel','延时台行程']];
+function opts(list){return list.map(([v,n])=>'<option value="'+esc(v)+'">'+esc(n)+'</option>').join('')}
+function axes(){const move=$('recMotion').value==='move';$('recAxis').innerHTML=opts((move?moves:rotations).filter(([k])=>k!=='params.travel'||main?.type==='delay'));$('recSecondAxis').innerHTML=opts([...rotations,...moves.filter(([k])=>k!=='params.travel'||second?.type==='delay')]);setStart()}
+function setStart(){const k=$('recAxis').value;$('recStart').value=k.startsWith('rotation.')?0:k.startsWith('params.')?main?.params[k.slice(7)]??0:main?.[k]??0;$('recEnd').value=Number($('recStart').value)+($('recMotion').value==='move'?10:90)}
+function pick(c){if(picking==='second'){second=c;$('recSecondTarget').value=c.id;$('recHint').textContent='联动器件：'+c.name+'。设置比例后记录。';picking='main';$('recSecondAxis').innerHTML=opts([...rotations,...moves.filter(([k])=>k!=='params.travel'||second?.type==='delay')])}else{main=c;$('recTarget').value=c.id;$('recHint').textContent='主器件：'+c.name+'。设置初始、步长和结束点。';axes()}}
+function mount(){const host=$('logProgram');if(!host)return;const p=$('experimentPanel');host.appendChild(p);p.classList.add('embedded-program');p.hidden=false;$('expClose').hidden=true;BenchExperiment.open()}
+function begin(){if(window.experimentLocked)return;BenchExperiment.capture();$('labLogPanel').hidden=true;$('experimentPanel').hidden=true;pane.hidden=false;main=second=null;picking='main';const cs=app.exportDesign().components;const list=opts([['','点击器件或在此选择'],...cs.map(c=>[c.id,c.name])]);$('recTarget').innerHTML=list;$('recSecondTarget').innerHTML=list;$('recStatus').textContent='';$('recHint').textContent='点击光路中的主器件，开始记录扫描。';axes();window.recordingPick=pick}
+function finish(){window.recordingPick=null;pane.hidden=true;LabLogUI.open()}
+function launchRun(original){return()=>{$('labLogPanel').hidden=true;const p=$('experimentPanel');document.body.appendChild(p);p.classList.remove('embedded-program');$('expClose').hidden=false;p.hidden=false;original()}}
+for(const id of ['expPlay','expStep']){const fn=$(id).onclick;$(id).onclick=launchRun(fn)}
+const oldClose=$('expClose').onclick;$('expClose').onclick=()=>{oldClose();if(!window.experimentLocked)LabLogUI.open()};
+$('recTarget').onchange=()=>{const c=app.exportDesign().components.find(c=>c.id===$('recTarget').value);if(c){picking='main';pick(c)}};
+$('recSecondTarget').onchange=()=>{const c=app.exportDesign().components.find(c=>c.id===$('recSecondTarget').value);if(c){picking='second';pick(c)}};
+$('recMotion').onchange=axes;$('recAxis').onchange=setStart;$('recLinked').onchange=()=>{$('recSecond').hidden=!$('recLinked').checked};
+$('recPickSecond').onclick=()=>{picking='second';$('recHint').textContent='现在点击联动器件。'};$('recCancel').onclick=finish;
+$('recAdd').onclick=()=>{try{if(!main)throw Error('先选择主器件');if($('recLinked').checked&&!second)throw Error('请选择联动器件');const num=id=>{const v=$(id).value;if(v===''||!Number.isFinite(Number(v)))throw Error('请填写有效数值');return Number(v)};
+const step={type:'scan',note:$('recNote').value,target:main.id,key:$('recAxis').value,start:num('recStart'),end:num('recEnd'),increment:num('recInc'),dwellMs:num('recDwell'),linked:$('recLinked').checked,secondTarget:second?.id,secondKey:$('recSecondAxis').value,offset:num('recOffset'),ratio:num('recRatio')};const plan=BenchExperiment.getPlan();plan.steps.push(step);C.compile(plan);BenchExperiment.setPlan(plan);finish()}catch(e){$('recStatus').textContent=e.message}};
+pane.addEventListener('keydown',e=>e.stopPropagation());
+window.RecordUI={mount,begin};$('recordActionBtn').onclick=()=>{LabLogUI.saveDraft();begin()};
+$('experimentBtn').textContent='实验记录';$('experimentBtn').onclick=()=>LabLogUI.open();$('experimentBtn').hidden=true;
+})();

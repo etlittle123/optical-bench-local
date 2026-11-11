@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict'),C=require('../dist/lablog.js');
+const m={x:0,y:1,xScale:1,yScale:1000,xLabel:'delay / ps',yLabel:'signal / mV'};
+let t=C.parse('\uFEFF# note\r\nx,y\r\n0,1e-3\r\n1,\r\n2,NaN\r\n3,2e-3');
+let r=C.map(t,m);assert.deepEqual(r.points.map(p=>[p.x,p.y]),[[0,1],[3,2]]);assert.deepEqual(r.rejected.map(p=>p.line),[4,5]);
+t=C.parse('metadata\nx;y\n"1,5";"2,5"',{skip:1,decimalComma:true});assert.equal(C.map(t,m).points[0].y,2500);
+t=C.parse('x\ty\n1\t2');assert.equal(C.map(t,m).points[0].y,2000);
+t=C.parse('x,y,note\n1,2,"two\nlines"\n3,4,"a""b"');assert.equal(t.rows[1].line,4);
+assert.throws(()=>C.parse('x,y\n1,"2'),/引号/);assert.throws(()=>C.map(t,{...m,x:-1}),/有效/);assert.throws(()=>C.map(t,{...m,yScale:0}),/比例/);
+assert.equal(C.parse('1 2\n'.repeat(20001),{header:false}).rows.length,20001);
+assert.throws(()=>C.parse('1 2\n'.repeat(100001),{header:false}),/200000/);
+const html=C.report({meta:{title:'<script>alert(1)</script>'},data:{raw:'x,y\n0,1\n1,',mapping:m,kind:'合成演示数据',filename:'<img onerror=x>'},design:{components:[],experiment:{steps:[{type:'wait',ms:20}]}}});
+assert.ok(!html.includes('<script>'));assert.ok(html.includes('&lt;script&gt;'));assert.ok(html.includes('预设动作'));assert.ok(html.includes('合成演示数据'));assert.ok(html.includes('原始导入文本'));assert.ok(html.includes('排除 1 行'));
+console.log('PASS data parsing, units, rejected rows, multiline quoting, limits, report provenance and escaping');

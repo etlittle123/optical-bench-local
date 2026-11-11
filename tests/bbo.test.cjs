@@ -1,0 +1,25 @@
+const assert=require('node:assert/strict');
+global.window={};require('../dist/components.js');const defs=window.OPTICAL_COMPONENTS,O=require('../dist/engine3d.js');
+const c=(id,type,x,params={})=>({id,name:id,type,x,y:100,z:100,yaw:0,pitch:0,roll:0,params:{...defs[type].defaults,...params}});
+const near=(a,b,t=1e-6)=>assert.ok(Math.abs(a-b)<t,`${a} != ${b}`);
+const cut=O.bboCut(800);assert.ok(cut>29&&cut<30);
+const crystal=c('b','bbo',200,{phaseMatchAngle:cut});
+near(O.bboMatch(crystal,[1,0,0],800).phaseFactor,1);
+// Manufacturer tabulated index and fitted coefficients differ slightly.
+near(O.bboIndex(1064),1.6551,.001);
+assert.ok(O.bboIndex(800)>O.bboIndex(800,'e',Math.PI/2));
+near(O.bboIndex(800),O.bboIndex(800,'e',0));
+const s={boards:[{x:0,y:0,cols:30,rows:20,spacing:25}],components:[c('s','laser',100,{polarization:90,power:.01}),crystal,c('d','detector',400)]};
+let r=O.trace(s,defs),rep=r.reports[0],out=r.segments.find(x=>x.toId==='d'&&x.beam.wavelength===400);
+assert.ok(out&&rep.power>0);near(out.beam.polarization,0);assert.ok(out.timePs>out.opl/.299792458);
+const fundamental=r.segments.find(x=>x.toId==='d'&&x.beam.wavelength===800),m=O.bboMode(crystal,[1,0,0],800,'o');
+near(fundamental.total,300);near(fundamental.opl,300+(m.n-1)*.5);near(fundamental.timePs,(300+(m.ng-1)*.5)/.299792458);
+s.components[0].params.polarization=0;r=O.trace(s,defs);assert.equal(r.segments.some(x=>x.beam.wavelength===400),false);
+s.components[0].params.polarization=45;r=O.trace(s,defs);const modes=r.segments.filter(x=>x.toId==='d'&&x.beam.wavelength===800);assert.equal(modes.length,2);near(modes[0].beam.power+modes[1].beam.power,.0095);assert.notEqual(modes[0].a[1],modes[1].a[1]);assert.notEqual(modes[0].timePs,modes[1].timePs);
+s.components[0].params.polarization=90;s.components[1].params.phaseMatchAngle=cut+2;r=O.trace(s,defs);assert.ok(r.reports[0].power<rep.power*.1);
+s.components[1].params.phaseMatchAngle=cut;s.components.push(c('s2','laser',100,{polarization:90,power:.01}));r=O.trace(s,defs);const synced=r.reports.find(x=>!x.self);assert.ok(synced.power>0);
+s.components.at(-1).x=101;r=O.trace(s,defs);assert.ok(r.reports.find(x=>!x.self).power<synced.power*1e-5);
+s.components[1].params.thickness=0;r=O.trace(s,defs);assert.ok(r.reports.every(x=>x.power===0));
+s.components[1].yaw=20;r=O.trace(s,defs);assert.ok(r.warnings.some(x=>x.includes('近法线')));
+assert.ok(r.segments.every(x=>Number.isFinite(x.timePs)));
+console.log('PASS BBO indices, degeneracy, matched cut, polarization selection, o/e power, walkoff, group time, mismatch, SFG overlap, zero thickness and incidence limit');
