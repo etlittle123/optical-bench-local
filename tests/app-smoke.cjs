@@ -79,9 +79,64 @@ for(const file of ['component-packs','catalog-core','catalog-data','catalog-ui']
 const card=name=>els.componentLibrary.children.find(e=>e.innerHTML.includes('>'+name+'<'));
 assert.equal(card('样品'),undefined);assert.ok(!html.includes('id="catalogBtn"'));
 card('透镜').click();assert.equal(els.catalogPanel.open,true);assert.equal(els.catalogType.value,'lens');assert.ok(els.catalogResults.children.length>0);
+assert.equal(els.catalogResults.children.length,4);
+els.catalogQuery.value='LA4148-AB';els.catalogQuery.oninput({type:'input'});assert.equal(els.catalogResults.children.length,1);
 els.catalogResults.children[0].click();els.catalogAdd.click();assert.ok(app.exportDesign().components.at(-1).catalog);assert.equal(els.catalogPanel.open,false);
 card('偏振片').click();assert.equal(els.catalogType.value,'polarizer');els.genericAdd.click();assert.equal(app.exportDesign().components.at(-1).type,'polarizer');
 card('材料').click();const count=app.exportDesign().components.length;els.materialCancel.click();assert.equal(app.exportDesign().components.length,count);
 card('材料').click();els.materialName.value='测试玻璃';els.materialMode.value='both';els.materialForm.onsubmit({preventDefault(){}});
 assert.equal(app.exportDesign().components.at(-1).name,'测试玻璃');assert.equal(app.exportDesign().components.at(-1).params.interaction,'both');assert.equal(els.materialPanel.open,false);
 console.log('PASS library dialogs, type filter, catalog placement, generic fallback, material cancellation and creation');
+
+for(const [label,sku,type]of [['偏振分束棱镜','49-871','pbs'],['沃拉斯顿棱镜','68-823','wollaston'],['光学斩波器','MC2000B','chopper']]){
+ card(label).click();els.catalogResults.children[0].click();assert.ok(els.catalogDetail.innerHTML.includes(sku));assert.ok(els.catalogDetail.innerHTML.includes('报价单'));assert.ok(!els.catalogDetail.innerHTML.includes('href=""'));els.catalogAdd.click();const c=app.exportDesign().components.at(-1);assert.equal(c.type,type);assert.ok(c.catalog.documents.length);if(type==='pbs')assert.equal(c.yaw,135);
+}
+// Imported large libraries still paginate, even though the bundled list is small.
+const lens=win.OPTICAL_CATALOG.records.find(r=>r.baseType==='lens');
+app.setCatalogRecords(Array.from({length:205},(_,i)=>({...lens,vendor:'Test Lab',sku:'LENS-'+i})));
+card('透镜').click();assert.equal(els.catalogResults.children.length,101);els.catalogMore.click();assert.equal(els.catalogResults.children.length,201);els.catalogMore.click();assert.equal(els.catalogResults.children.length,209);els.catalogClose.click();app.setCatalogRecords([]);
+console.log('PASS document-only sources, specialized component placement, imported catalog pagination');
+
+// The angle recorder needs only three angle values, never a measured power.
+Element.prototype.appendChild=Element.prototype.append;context.Date=Date;
+// ComponentPacks UI is skipped by this adapter because window.document is absent.
+win.ComponentPacks.refresh=()=>{};
+let returnedToLog=0,savedLogDrafts=0;context.LabLogUI=win.LabLogUI={saveDraft(){savedLogDrafts++},open(){returnedToLog++;els.labLogPanel.hidden=false}};context.confirm=()=>true;
+for(const file of ['lablog','polarization-records','polarization-ui']){vm.runInContext(fs.readFileSync(__dirname+'/../dist/'+file+'.js','utf8'),context);Object.assign(context,win)}
+const selected=Object.fromEntries(['laser','polarizer','hwp','pbs'].map(type=>[type,app.exportDesign().components.find(c=>c.type===type).id]));
+els.labLogPanel.hidden=true;
+win.PolarizationRecordUI.open(selected.pbs);assert.equal(els.polarizationPanel.open,true);
+for(const [k,id]of Object.entries(selected))els['polAngle_'+k].value=id;
+els.polAngle_polarizerAngle.value='30';els.polAngle_hwpMaxAngle.value='17.5';els.polAngle_hwpMinAngle.value='62.5';els.polAngle_note.value='固定偏振片';
+const poses=JSON.stringify(app.exportDesign().components);els.polAngleSave.click();let savedAngles=app.exportDesign().labLog.polarizationAngles;assert.equal(savedAngles.length,1);assert.equal(savedAngles[0].hwpMaxAngle,17.5);assert.equal(JSON.stringify(app.exportDesign().components),poses);assert.ok(els.polAngleList.innerHTML.includes('62.5°'));
+els.polAngle_hwpMinAngle.value='';els.polAngleSave.click();assert.ok(els.polAngleStatus.textContent.includes('有效'));assert.equal(app.exportDesign().labLog.polarizationAngles[0].hwpMinAngle,62.5);
+els.polAngle_hwpMinAngle.value='63';els.polAngleSave.click();assert.equal(app.exportDesign().labLog.polarizationAngles.length,1);assert.equal(app.exportDesign().labLog.polarizationAngles[0].hwpMinAngle,63);
+els.polAngleClose.click();assert.equal(els.polarizationPanel.open,false);assert.equal(returnedToLog,0);assert.equal(els.labLogPanel.hidden,true);assert.equal(savedLogDrafts,0);
+const designWithAngles=app.exportDesign();app.importDesign(JSON.parse(JSON.stringify(designWithAngles)));win.PolarizationRecordUI.open(selected.pbs);assert.equal(els.polAngle_hwpMinAngle.value,63);els.polAngleDelete.click();assert.equal(app.exportDesign().labLog.polarizationAngles.length,0);
+console.log('PASS angle recorder input, invalid blanks, editing, persistence, no pose changes, reopening and removal');
+// Escape and the close button both return to the entry page, on every opening.
+let escapePrevented=false;els.polarizationPanel.events.cancel[0]({preventDefault(){escapePrevented=true}});assert.ok(escapePrevented);assert.equal(els.polarizationPanel.open,false);assert.equal(returnedToLog,0);assert.equal(els.labLogPanel.hidden,true);
+els.labLogPanel.hidden=false;els.logPolarizationBtn.click();assert.equal(savedLogDrafts,1);els.polAngleClose.click();assert.equal(returnedToLog,1);assert.equal(els.labLogPanel.hidden,false);
+els.logPolarizationBtn.click();els.polarizationPanel.events.cancel[0]({preventDefault(){}});assert.equal(savedLogDrafts,2);assert.equal(returnedToLog,2);assert.equal(els.polarizationPanel.open,false);
+els.labLogPanel.hidden=true;win.PolarizationRecordUI.open(selected.pbs);els.polAngleClose.click();assert.equal(returnedToLog,2);assert.equal(els.labLogPanel.hidden,true);
+console.log('PASS angle dialog close and Escape return to canvas or refresh the originating log without stale drafts');
+
+// Extrema records must reach the live trace (and the inspector) without moving devices.
+const angleRecord=(id,maxAngle=45,minAngle=0)=>({version:1,id,ids:{laser:'L',polarizer:'P',hwp:'H',pbs:'B'},names:{},polarizerAngle:0,hwpMaxAngle:maxAngle,hwpMinAngle:minAngle,note:''});
+const calScene=(roll,log)=>({version:8,showRays:true,boards:[{id:'b',x:0,y:0,cols:20,rows:16,spacing:25}],components:[
+ {id:'L',type:'laser',name:'L',x:0,y:100,z:100,yaw:0,pitch:0,roll:0,params:{power:100,polarization:0}},
+ {id:'P',type:'polarizer',name:'P',x:100,y:100,z:100,yaw:0,pitch:0,roll:0,params:{transmission:100}},
+ {id:'H',type:'hwp',name:'H',x:200,y:100,z:100,yaw:0,pitch:0,roll,params:{transmission:100}},
+ {id:'B',type:'pbs',name:'B',x:300,y:100,z:100,yaw:135,pitch:0,roll:0,params:{}}
+],...(log?{labLog:log}:{})});
+const splitP=()=>{const s=app.getTrace().segments.filter(r=>r.fromId==='B'),sum=k=>s.filter(r=>r.branch.endsWith(k)).reduce((n,r)=>n+r.beam.power,0);return{reflected:sum('R'),transmitted:sum('T')}};
+app.importDesign(calScene(17.5));assert.ok(Math.abs(splitP().reflected-32.9)<.05);
+app.setLabLog({meta:{},data:null,polarizationAngles:[angleRecord('a1',17.5,62.5)]});assert.ok(Math.abs(splitP().reflected-100)<1e-6);
+app.setLabLog({meta:{},data:null});assert.ok(Math.abs(splitP().reflected-32.9)<.05);
+app.importDesign(calScene(62.5,{meta:{},data:null,polarizationAngles:[angleRecord('a1',17.5,62.5)]}));assert.ok(Math.abs(splitP().transmitted-100)<1e-6);
+app.importDesign(calScene(17.5,{meta:{},data:null,polarizationAngles:[angleRecord('a1',17.5,62.5)]}));assert.ok(Math.abs(splitP().reflected-100)<1e-6);
+app.importDesign(calScene(17.5,{meta:{},data:null,polarizationAngles:[angleRecord('a1')]}));
+app.addComponent('hwp');const addedHwp=app.exportDesign().components.at(-1);
+app.setLabLog({meta:{},data:null,polarizationAngles:[{...angleRecord('a2'),ids:{...angleRecord('a2').ids,hwp:addedHwp.id},hwpMaxAngle:30,hwpMinAngle:10}]});
+assert.ok(els.inspector.innerHTML.includes('目标反射'),els.inspector.innerHTML);assert.ok(els.inspector.innerHTML.includes('scan-chart'));
+console.log('PASS extrema records drive the live trace after saving, removal restores ideal physics, and the HWP inspector previews the calibrated split');

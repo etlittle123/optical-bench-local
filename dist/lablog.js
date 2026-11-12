@@ -58,7 +58,7 @@ function describeStep(s,design){
  if(s.type==='scan'&&s.linked)text+='；联动 '+name(s.secondTarget)+' '+k(s.secondKey)+' = '+s.offset+' + '+s.ratio+' ×（主轴值 − '+s.start+'）';
  return (s.note?s.note+'；':'')+text+'；等待 '+(s.dwellMs||0)+' ms';
 }
-function report({meta,data,workbench,design,image,traceWarnings=[]}){
+function report({meta,data,workbench,polarizationAngles,design,image,traceWarnings=[]}){
  const mapped=data?map(parse(data.raw,data.parser),data.mapping):null,pts=mapped?.points||[],labels=data?[data.mapping.xLabel||'X',data.mapping.yLabel||'Y']:['X','Y'];
  const steps=design.experiment?.steps||[];
  const pending=design.photoReconstruction;
@@ -70,12 +70,12 @@ function report({meta,data,workbench,design,image,traceWarnings=[]}){
  '<h1>'+esc(meta.title||'实验日志')+'</h1><p class="muted">实验日期：'+esc(meta.date||'未填写')+' · 记录人：'+esc(meta.author||'未填写')+'<br>导出时间：'+esc(new Date().toISOString())+' · Optical Bench V14</p>'+
  '<div class="note">本日志组合用户提供的测量数据、模拟光路和预设流程。模拟布局不证明真实装置配置；预设步骤不代表已经实际执行。未自动推断样品性质、拟合结果或实验结论。</div>'+
  '<h2>1. 实验目的与设置</h2><p>'+esc(meta.purpose||'未填写')+'</p><p>仪器与采集设置：'+esc(meta.settings||'未填写')+'</p>'+
- '<h2>2. 当前模拟光路</h2>'+safeImage+'<p class="muted">导出时的画布视角与显隐设置；图像为模拟示意，不是实验照片或实测几何。</p>'+
+ '<h2>2. 当前模拟光路</h2>'+safeImage+'<p class="muted">白底光路示意图；平面光路采用俯视图，不同高度的光路保留空间视角。图像为模拟示意。</p>'+
  (pending?'<h3>照片重建来源及待确认项</h3><p>以下信息来自 AI 光路初稿，尚未作为真实参数验证。</p>'+pre(pending):'')+
  '<h2>3. 预设动作</h2>'+
  (steps.length?table(['序号','动作说明'],steps.map((s,i)=>[i+1,describeStep(s,design)])):'<p>尚未在模拟器中录制动作。</p>')+
  '<p class="muted">以下是模拟器中录制或编辑的动作，不是 LabVIEW 或真实硬件执行记录。流程初始快照可能与当前光路不同，保存在设计 JSON 中。</p>'+
- '<h2>4. 导入数据与曲线</h2>'+
+ '<h2>4. 导入数据与曲线</h2>'+(root.PolarizationRecords?.html(polarizationAngles)||'')+
  (data?'<p>来源文件：'+esc(data.filename)+'\n数据性质：'+esc(data.kind||'未声明')+'\n导入时间：'+esc(data.importedAt)+'\nX：'+esc(labels[0])+'（源列 '+(+data.mapping.x+1)+'，乘数 '+esc(data.mapping.xScale)+'）\nY：'+esc(labels[1])+'（源列 '+(+data.mapping.y+1)+'，乘数 '+esc(data.mapping.yScale)+'）\n有效 '+pts.length+' / '+mapped.total+' 行；排除 '+mapped.rejected.length+' 行。</p>'+graph+(pts.length&&workbench?.config?.showPolar&&workbench.config.kind!=='polar'&&root.DataWorkbenchCore?'<h3>Polar plot</h3>'+root.DataWorkbenchCore.plot(pts,{...workbench.config,kind:'polar'},workbench.fitResult):'')+
  '<p>数据摘要：采样最大 Y='+peak.y.toPrecision(6)+'，对应 X='+peak.x.toPrecision(6)+'。这是离散采样极值，不是拟合峰位；并列时显示首个。</p>'+
  (mapped.rejected.length?'<details><summary>排除行与原因</summary>'+table(['原始行号','原因'],mapped.rejected.map(r=>[r.line,r.reason]))+'</details>':'')+

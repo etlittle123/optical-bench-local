@@ -12,10 +12,11 @@
   <link rel="stylesheet" href="light.css" /><link rel="stylesheet" href="experiment.css" />
   <link rel="stylesheet" href="lablog.css" /><link rel="stylesheet" href="data-workbench.css" /><link rel="stylesheet" href="record.css" />
 <link rel="stylesheet" href="catalog.css">
+  <link rel="stylesheet" href="polarization.css">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><span class="brand-mark">⌁</span><div><strong>Optical Bench <em>3D</em></strong><small>V14.4 · 实验工作簿</small></div></div>
+    <div class="brand"><span class="brand-mark">⌁</span><div><strong>Optical Bench <em>3D</em></strong><small>V14.5 · 实验工作簿</small></div></div>
     <div class="toolbar">
       <button id="labLogBtn" class="tool-btn">实验记录</button><button id="dataWorkbenchBtn" class="tool-btn">数据表与绘图</button>
       <button id="rayToggleBtn" class="tool-btn active">自动追迹：开 <kbd>B</kbd></button>
@@ -127,6 +128,7 @@
       <p class="log-note">日志仅包含实验目的与设置、当前模拟光路、预设动作和导入数据与曲线。录制动作会标为“仅模拟器流程，非硬件执行记录”。导出后可在浏览器中打印成 PDF。</p>
       <details><summary>照片重建来源与待确认参数</summary><pre id="logPhoto"></pre></details>
     </section><section><h3>数据分析</h3><p>导入横向或纵向 TXT，编辑数据名称和单元格，再选择折线图、散点图或极坐标图，设置公式拟合。</p><button id="logWorkbenchBtn">打开数据表与绘图</button><p id="logDataSummary"></p><div id="logAnalysisPreview"></div><p class="log-note">不再限制 100 列。按总数据量限制为 10 MB / 200,000 单元格；表格分页显示。两三行横向数据可一键转置。</p></section>
+    <section><h3>PBS 反射端极值角度</h3><p>记录偏振片固定角度，以及半波片使反射光最强、最弱的两个角度；保存后这两个刻度会校准同一光路中半波片到 PBS 的反射与透射比例。</p><button id="logPolarizationBtn">设置极值角度</button></section>
     <section id="logProgram"><h3>模拟器录制动作</h3><button id="recordActionBtn">● 返回光路，录制扫描动作</button><p class="log-note">选择器件 → 设置位移或旋转轴 → 起点、步长、终点 → 可选同步联动。程序框依次执行，可上移、下移或删除。模拟运行不代表真实实验已经执行。</p></section>
     <section id="logLegacyData" hidden><h3>导入 TXT / CSV / TSV</h3>
       <div class="log-actions"><input id="logFile" type="file" accept=".txt,.csv,.tsv"><button id="logExample">合成数据示例</button><button id="logClear">移除数据</button></div>
@@ -147,6 +149,6 @@
   <script src="catalog-core.js"></script><script src="catalog-data.js"></script><script src="engine3d.js"></script>
   <script src="view3d.js"></script>
   <script src="sheets.js"></script><script src="app8.js"></script><script src="experiment.js"></script><script src="experiment-ui.js"></script>
-  <script src="data-workbench.js"></script><script src="lablog.js"></script><script src="notion-export.js"></script><script src="experiment-archive.js"></script><script src="lablog-ui.js"></script><script src="data-workbench-ui.js"></script><script src="record-ui.js"></script><script src="component-packs.js"></script><script src="catalog-ui.js"></script>
+  <script src="data-workbench.js"></script><script src="polarization-records.js"></script><script src="lablog.js"></script><script src="notion-export.js"></script><script src="experiment-archive.js"></script><script src="lablog-ui.js"></script><script src="data-workbench-ui.js"></script><script src="record-ui.js"></script><script src="component-packs.js"></script><script src="catalog-ui.js"></script><script src="polarization-ui.js"></script>
 </body>
 </html>

@@ -1,0 +1,57 @@
+{
+  "checked": "2026-11-12",
+  "scope": "user-documents-optical-components",
+  "completeManufacturerCatalog": false,
+  "total": 39,
+  "counts": {
+    "Edmund Optics": {
+      "nd": 5,
+      "pbs": 1,
+      "spectralFilter": 3,
+      "polarizer": 4,
+      "wollaston": 1,
+      "qwp": 1,
+      "hwp": 1,
+      "bbo": 1
+    },
+    "Thorlabs": {
+      "chopper": 1,
+      "hwp": 1,
+      "polarizer": 1,
+      "lens": 4,
+      "mirror": 2,
+      "bbo": 2
+    },
+    "LBTEK": {
+      "mirror": 2,
+      "iris": 2,
+      "nd": 3,
+      "polarizer": 2,
+      "spectralFilter": 2
+    }
+  },
+  "documents": [
+    "LB订单价格表.xlsx",
+    "发票.pdf",
+    "报价单(1).PDF",
+    "报价单.pdf"
+  ],
+  "sources": [
+    "https://en.lbtek.com/product/162",
+    "https://www.edmundoptics.com/f/PdfExport/14910",
+    "https://www.edmundoptics.com/f/achromatic-waveplates-retarders/12821/",
+    "https://www.edmundoptics.com/p/20mm-nir-polarizing-cube-beamsplitter/10343/",
+    "https://www.edmundoptics.com/p/775nm-25mm-diameter-od-4-shortpass-filter/28591/",
+    "https://www.edmundoptics.com/p/800nm-25mm-diameter-od-4-shortpass-filter/19045/",
+    "https://www.edmundoptics.com/p/a-bbo-wollaston-polarizer/23435/",
+    "https://www.edmundoptics.com/p/od-004-40-762-x-254mm-continuously-variable-nd-filter/17667/",
+    "https://www.lbtek.com/product/1048",
+    "https://www.lbtek.com/product/308",
+    "https://www.lbtek.com/product/325",
+    "https://www.lbtek.com/product/390?path=28/32/64/525",
+    "https://www.lbtek.com/product/77?path=28%2F30%2F57",
+    "https://www.lbtek.com/product/830?fid=28&sid=28&tid=259",
+    "https://www.thorlabs.com/images/Catalog/V19_08_Optics.pdf",
+    "https://www.thorlabs.com/images/Catalog/V21/V21_3_Optics.pdf"
+  ]
+}

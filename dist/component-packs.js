@@ -5,9 +5,10 @@ const fail=s=>{throw Error(s)},obj=o=>o&&typeof o==='object'&&!Array.isArray(o),
 function safeTree(o,depth=0){if(depth>12)fail('器件包嵌套过深');if(!o||typeof o!=='object')return;for(const k of Object.keys(o)){if(['__proto__','prototype','constructor'].includes(k))fail('非法字段：'+k);safeTree(o[k],depth+1)}}
 function pose(p={},label='pose'){if(!obj(p))fail(label+' 应为对象');for(const [k,v]of Object.entries(p)){if(!['x','y','z','yaw','pitch','roll'].includes(k)||typeof v!=='number'||!Number.isFinite(v)||Math.abs(v)>1e6)fail(label+' 无效坐标或角度：'+k);if(k==='z'&&v<0||k==='pitch'&&Math.abs(v)>90)fail(label+' 超出范围：'+k)}return copy(p)}
 function params(p,base){if(!obj(p))fail('params 应为对象');for(const [k,v]of Object.entries(p)){if(!own(base,k))fail('未知模型参数：'+k);if(typeof v!==typeof base[k]||typeof v==='number'&&!Number.isFinite(v))fail('参数类型错误：'+k);if(typeof v==='number'){
- if(['transmission','reflectivity','reflection','passTransmission','blockTransmission'].includes(k)&&(v<0||v>100))fail(k+' 必须在 0–100%');
+ if(['dutyCycle','transmission','reflectivity','reflection','passTransmission','blockTransmission'].includes(k)&&(v<0||v>100))fail(k+' 必须在 0–100%');
  if(['power','thickness','opticalDensity','travel','targetDelay','responsivity','transimpedanceGain','saturationPower'].includes(k)&&v<0)fail(k+' 不能为负');
  if(['aperture','wavelength','repetitionRate','waistRadius','pulseWidth','refractiveIndex','groupIndex','minWavelength','maxWavelength','cutoffWavelength','centerWavelength','bandwidth','scanStep'].includes(k)&&v<=0)fail(k+' 必须为正');
+ if(k==='separationAngle'&&(v<=0||v>=90))fail(k+' 必须大于 0 且小于 90°');
  if(k==='m2'&&v<1||k==='ellipticity'&&Math.abs(v)>45||k==='focalLength'&&v===0)fail(k+' 超出模型范围');
  }if(k==='interaction'&&!['transmit','reflect','both'].includes(v)||k==='filterType'&&!['shortpass','longpass','bandpass'].includes(v)||k==='reflectBand'&&!['short','long'].includes(v))fail('不支持的枚举值：'+k)}return copy(p)}
 function validate(input,defs){

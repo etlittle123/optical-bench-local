@@ -57,8 +57,8 @@ async function importFile(e){
 }
 function exportLog(){
  try{fields();if(draft.data&&!current)throw Error('请先修正解析或列映射');persist();
- const design=app.exportDesign();delete design.labLog;delete design.experimentBook;
- const html=C.report({meta:draft.meta,data:draft.data,workbench:draft.workbench,design,image:app.captureScene(),traceWarnings:app.getTrace().warnings});
+ const design=app.exportDesign(),diagram={...design};delete design.labLog;delete design.experimentBook;
+ const html=C.report({meta:draft.meta,data:draft.data,workbench:draft.workbench,polarizationAngles:draft.polarizationAngles,design,...window.captureOpticalDiagram(diagram)});
  download('experiment-log.html',html,'text/html;charset=utf-8');note('已导出日志 HTML。打开后可用浏览器打印为 PDF；原始数据和设计 JSON 保留在折叠附录中。');
  }catch(e){note(e.message)}
 }
