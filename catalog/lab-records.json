@@ -1419,6 +1419,114 @@
       "documents": [
         "LB订单价格表.xlsx · 订单明细!A36、A40、A53"
       ]
+    },
+    {
+      "vendor": "LBTEK",
+      "sku": "MEFH10-500SP",
+      "name": "优质短波通滤光片",
+      "baseType": "spectralFilter",
+      "source": "https://www.lbtek.com/product/635",
+      "checked": "2026-11-19",
+      "params": {
+        "filterType": "shortpass",
+        "cutoffWavelength": 500,
+        "aperture": 22,
+        "passTransmission": 85,
+        "blockTransmission": 0.001
+      },
+      "basis": {
+        "filterType": "官网型号表：短波通。",
+        "cutoffWavelength": "官网标称截止波长；模拟采用理想阶跃。",
+        "aperture": "官网系列规格：通光孔径 Ø22 mm。",
+        "passTransmission": "取官网系列通带透过率下限 85% 为常数近似，不是实测曲线。",
+        "blockTransmission": "由官网截止带平均 OD>5 换算，取 100×10⁻⁵=0.001% 为常数近似；仅适用于厂家定义的截止带。"
+      },
+      "specs": [
+        [
+          "滤光方式",
+          "SP / 短波通"
+        ],
+        [
+          "截止波长",
+          "500 nm"
+        ],
+        [
+          "外径 / 通光孔径",
+          "25.4 / 22 mm"
+        ],
+        [
+          "型号表厚度",
+          "3.5 mm"
+        ],
+        [
+          "通带透过率",
+          ">85%"
+        ],
+        [
+          "截止带平均光密度",
+          "OD(avg)>5"
+        ],
+        [
+          "基底",
+          "紫外熔融石英"
+        ]
+      ],
+      "ranges": [],
+      "notes": "用户指定追加，来源为官网系列说明及型号表。截止边缘采用阶跃近似；详细通带、阻带范围及实测曲线未收录，不保证所有波长均符合上述常数。3.5 mm 为型号表厚度，未将安装组件厚度直接作为光学基片厚度；未映射的厚度、折射率与 GDD 使用通用默认值，需核对。"
+    },
+    {
+      "vendor": "LBTEK",
+      "sku": "MEFH10-600SP",
+      "name": "优质短波通滤光片",
+      "baseType": "spectralFilter",
+      "source": "https://www.lbtek.com/product/635",
+      "checked": "2026-11-19",
+      "params": {
+        "filterType": "shortpass",
+        "cutoffWavelength": 600,
+        "aperture": 22,
+        "passTransmission": 85,
+        "blockTransmission": 0.001
+      },
+      "basis": {
+        "filterType": "官网型号表：短波通。",
+        "cutoffWavelength": "官网标称截止波长；模拟采用理想阶跃。",
+        "aperture": "官网系列规格：通光孔径 Ø22 mm。",
+        "passTransmission": "取官网系列通带透过率下限 85% 为常数近似，不是实测曲线。",
+        "blockTransmission": "由官网截止带平均 OD>5 换算，取 100×10⁻⁵=0.001% 为常数近似；仅适用于厂家定义的截止带。"
+      },
+      "specs": [
+        [
+          "滤光方式",
+          "SP / 短波通"
+        ],
+        [
+          "截止波长",
+          "600 nm"
+        ],
+        [
+          "外径 / 通光孔径",
+          "25.4 / 22 mm"
+        ],
+        [
+          "型号表厚度",
+          "3.5 mm"
+        ],
+        [
+          "通带透过率",
+          ">85%"
+        ],
+        [
+          "截止带平均光密度",
+          "OD(avg)>5"
+        ],
+        [
+          "基底",
+          "紫外熔融石英"
+        ]
+      ],
+      "ranges": [],
+      "notes": "用户指定追加，来源为官网系列说明及型号表。截止边缘采用阶跃近似；详细通带、阻带范围及实测曲线未收录，不保证所有波长均符合上述常数。3.5 mm 为型号表厚度，未将安装组件厚度直接作为光学基片厚度；未映射的厚度、折射率与 GDD 使用通用默认值，需核对。"
     }
   ]
 }

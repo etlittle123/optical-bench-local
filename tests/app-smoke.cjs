@@ -96,6 +96,9 @@ const lens=win.OPTICAL_CATALOG.records.find(r=>r.baseType==='lens');
 app.setCatalogRecords(Array.from({length:205},(_,i)=>({...lens,vendor:'Test Lab',sku:'LENS-'+i})));
 card('透镜').click();assert.equal(els.catalogResults.children.length,101);els.catalogMore.click();assert.equal(els.catalogResults.children.length,201);els.catalogMore.click();assert.equal(els.catalogResults.children.length,209);els.catalogClose.click();app.setCatalogRecords([]);
 console.log('PASS document-only sources, specialized component placement, imported catalog pagination');
+card('透镜').click();els.catalogQuery.value='LA4380-AB';els.catalogQuery.oninput({type:'input'});assert.ok(els.catalogResults.children[0].innerHTML.includes('<strong>凸透镜 · f = 100.3 mm</strong><span>LA4380-AB</span>'));els.catalogClose.click();
+for(const nm of [500,600]){card('波长滤光片').click();els.catalogQuery.value=`MEFH10-${nm}sp`;els.catalogQuery.oninput({type:'input'});assert.equal(els.catalogResults.children.length,1);assert.equal(els.catalogResults.children[0].innerHTML,`<small>LBTEK</small><strong>SP · ${nm} nm</strong><span>MEFH10-${nm}SP</span>`);els.catalogResults.children[0].click();els.catalogAdd.click();assert.equal(app.exportDesign().components.at(-1).params.cutoffWavelength,nm);}
+console.log('PASS vendor/specification/model card order and both requested filters can be searched and placed');
 
 // The angle recorder needs only three angle values, never a measured power.
 Element.prototype.appendChild=Element.prototype.append;context.Date=Date;

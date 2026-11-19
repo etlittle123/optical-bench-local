@@ -18,3 +18,17 @@ for(const style of ['studio','paper'])for(const type of ['pbs','wollaston','chop
  const c=component('special',type,200),s={...scene,components:[scene.components[0],c]},v=new BenchView(canvas,{style,animate:false});v.resize(1000,700);v.polarization=false;v.setScene(s,O.trace(s,defs),new Set());v.preset('top');v.paint();assert.ok(v.labelLayout.some(b=>b.it.style.text===defs[type].name));
 }
 console.log('PASS specialized optics studio and paper rendering');
+const sp=component('sp','spectralFilter',160),lp=component('lp','spectralFilter',220),nd=component('nd','nd',280),bp=component('bp','spectralFilter',340);
+sp.params.cutoffWavelength=775;lp.params.filterType='longpass';lp.params.cutoffWavelength=650;nd.params.opticalDensity=2;nd.catalog={vendor:'Hidden vendor',ranges:[[350,1100]]};bp.params.filterType='bandpass';bp.params.centerWavelength=800;bp.params.bandwidth=10;
+const crowded={...scene,components:[component('source','laser',50),sp,lp,nd,bp,component('end','detector',430)]};
+for(const style of ['studio','paper']){
+ const v=new BenchView(canvas,{style,animate:false});v.resize(1000,700);v.showBoards=false;v.showWavelengths=false;v.polarization=false;
+ assert.equal(v.componentName(sp),'SP · 775 nm');assert.equal(v.componentName(lp),'LP · 650 nm');assert.equal(v.componentName(nd),'ND · OD 2\n工作波段 350–1100 nm');assert.equal(v.componentName(bp),'BP · 800 nm\n带宽 10 nm');
+ for(const preset of ['top','iso'])for(const zoom of [.6,1,1.5]){v.setScene(crowded,O.trace(crowded,defs),new Set());v.preset(preset);v.camera.zoom=zoom;v.dirty=true;v.paint();
+  for(const b of v.labelLayout){assert.ok(b.score<3000,`${style}/${preset}/${zoom}: ${b.it.style.text} occludes a ray, optic, label or connector`);assert.ok(b.w<=212);assert.ok(b.lines.every(l=>!l.includes('\n')));assert.ok(b.x>=0&&b.y>=0&&b.x+b.w<=v.w&&b.y+b.h<=v.h)}
+  const label=v.labelLayout.find(b=>b.it.style.text.startsWith('ND'));assert.equal(label.lines[0],'ND · OD 2');assert.ok(label.fonts[0].includes('13px'));assert.ok(label.fonts[1].includes('12px'));
+ }
+ nd.params.opticalDensity=.04;assert.ok(v.componentName(nd).startsWith('ND · OD 0.04'));nd.params.opticalDensity=2;
+ assert.equal(v.componentName({...nd,catalog:undefined}),'ND · OD 2\n工作波段未录入');
+}
+console.log('PASS live filter specifications, explicit unknown ND ranges, compact multiline labels and dense-layout avoidance at multiple zooms in studio/paper views');

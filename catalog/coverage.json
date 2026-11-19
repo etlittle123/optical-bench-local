@@ -1,8 +1,8 @@
 {
-  "checked": "2026-11-12",
-  "scope": "user-documents-optical-components",
+  "checked": "2026-11-19",
+  "scope": "user-documents-and-requested-optical-components",
   "completeManufacturerCatalog": false,
-  "total": 39,
+  "total": 41,
   "counts": {
     "Edmund Optics": {
       "nd": 5,
@@ -27,7 +27,7 @@
       "iris": 2,
       "nd": 3,
       "polarizer": 2,
-      "spectralFilter": 2
+      "spectralFilter": 4
     }
   },
   "documents": [
@@ -49,6 +49,7 @@
     "https://www.lbtek.com/product/308",
     "https://www.lbtek.com/product/325",
     "https://www.lbtek.com/product/390?path=28/32/64/525",
+    "https://www.lbtek.com/product/635",
     "https://www.lbtek.com/product/77?path=28%2F30%2F57",
     "https://www.lbtek.com/product/830?fid=28&sid=28&tid=259",
     "https://www.thorlabs.com/images/Catalog/V19_08_Optics.pdf",

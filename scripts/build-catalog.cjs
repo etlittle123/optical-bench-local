@@ -10,6 +10,6 @@ const catalog={kind:'optical-bench-catalog',version:1,records};
 fs.writeFileSync(path.join(root,'dist/catalog-data.js'),'window.OPTICAL_CATALOG = '+JSON.stringify(catalog,null,2)+';\n');
 const counts={};for(const r of records){counts[r.vendor]??={};counts[r.vendor][r.baseType]=(counts[r.vendor][r.baseType]||0)+1;}
 const sources=[...new Set(records.map(r=>r.source).filter(Boolean))].sort();
-const documents=[...new Set(records.flatMap(r=>r.documents.map(s=>s.split(' · ')[0])))].sort();
-fs.writeFileSync(path.join(root,'catalog/coverage.json'),JSON.stringify({checked:'2026-11-12',scope:'user-documents-optical-components',completeManufacturerCatalog:false,total:records.length,counts,documents,sources},null,2)+'\n');
+const documents=[...new Set(records.flatMap(r=>(r.documents||[]).map(s=>s.split(' · ')[0])))].sort();
+fs.writeFileSync(path.join(root,'catalog/coverage.json'),JSON.stringify({checked:records.map(r=>r.checked).sort().at(-1),scope:'user-documents-and-requested-optical-components',completeManufacturerCatalog:false,total:records.length,counts,documents,sources},null,2)+'\n');
 console.log(JSON.stringify({total:records.length,counts},null,2));
